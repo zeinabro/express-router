@@ -17,7 +17,9 @@ fruitRouter.get("/:id", async(req,res) => {
 })
 
 const validator = [
-    check("color").trim().not().isEmpty()
+    check("color").trim().not().isEmpty(),
+    check("name").trim().not().isEmpty(),
+    check("name").isLength({ min:5, max: 20})
 ]
 
 fruitRouter.post("/",validator, async(req,res) => {

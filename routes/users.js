@@ -17,7 +17,11 @@ usersRouter.get("/:id", async(req,res) => {
     res.json(user)
 })
 
-const validator = [check("name").trim().not().isEmpty()]
+const validator = [
+    check("name").trim().not().isEmpty(),
+    check("name").isLength({ min:5, max:15 }),
+    check("age").not().isEmpty(),
+]
 
 usersRouter.post("/", validator ,async(req,res) => {
     const errors = validationResult(req)
@@ -33,20 +37,26 @@ usersRouter.post("/", validator ,async(req,res) => {
     }
 })
 
-usersRouter.put("/:id", async(req,res) => {
-    await User.update(
-        {
-            name: req.body.name,
-            age: req.body.age
-        },
-        {
-            where:{
-                id: req.params.id
+usersRouter.put("/:id", validator ,async(req,res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        res.status(400).json( {error: errors.array()} )
+    } else {
+        await User.update(
+            {
+                name: req.body.name,
+                age: req.body.age
+            },
+            {
+                where:{
+                    id: req.params.id
+                }
             }
-        }
-    )
-    const user = await User.findByPk(req.params.id)
-    res.json(user)
+        )
+        const user = await User.findByPk(req.params.id)
+        res.json(user)
+    }
 })
 
 usersRouter.delete("/:id", async(req,res) => {
