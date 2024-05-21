@@ -38,7 +38,7 @@ fruitRouter.put("/:id", validator, async(req,res) => {
     if (!errors.isEmpty()){
         res.status(400).json({ error: errors.array() })
     } else {
-       const fruit = await Fruit.update(
+        await Fruit.update(
         {
             name: req.body.name,
             color: req.body.color
@@ -48,7 +48,8 @@ fruitRouter.put("/:id", validator, async(req,res) => {
                 id: req.params.id
             }
         })
-       res.json(fruit)
+        const fruit = await Fruit.findByPk(req.params.id)
+        res.json(fruit)
     }
 })
 
