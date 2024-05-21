@@ -3,6 +3,9 @@ const User = require("../models/User")
 
 const usersRouter = express.Router()
 
+usersRouter.use(express.json())
+usersRouter.use(express.urlencoded())
+
 usersRouter.get("/", async(req,res) => {
     const users = await User.findAll()
     res.json(users)
@@ -14,10 +17,9 @@ usersRouter.get("/:id", async(req,res) => {
 })
 
 usersRouter.post("/", async(req,res) => {
-    const data = req.body
     const user = await User.create({
-        name: data.name,
-        age: data.age
+        name: req.body.name,
+        age: req.body.age
     })
     res.json(user)
 })
