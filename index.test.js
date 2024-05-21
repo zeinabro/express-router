@@ -21,7 +21,7 @@ describe("/users endpoint", () => {
         expect(res.body.name).toEqual(seedUsers[0].name)
     })
 
-    test("create new user", async() => {
+    test("create new user with valid info", async() => {
         const user = {
             name: "Zeinab",
             age: 20
@@ -29,6 +29,23 @@ describe("/users endpoint", () => {
         const res = await request(app).post("/users").send(user)
         expect(res.statusCode).toBe(200)
         expect(res.body.name).toEqual(user.name)
+    })
+
+    test("cannot create new user with invalid info", async() => {
+        const user = {
+            name: " ",
+            age: 20
+        }
+        const res = await request(app).post("/users").send(user)
+        expect(res.statusCode).toBe(400)
+        expect(res.body.error[0]).toEqual(
+            {
+                "value": "",
+                "msg": "Invalid value",
+                "param": "name",
+                "location": "body"
+            }
+        )
     })
 
     test("update existing user", async() => {
